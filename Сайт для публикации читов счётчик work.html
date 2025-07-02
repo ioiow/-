@@ -1,0 +1,447 @@
+<!-- 👇 Убедись, что это сохранено с расширением .html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Стиль Черепа с переливами</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Metal Mania', cursive;
+      background: linear-gradient(135deg, #000000, #4a0000, #5a0000, #000000);
+      background-size: 400% 400%;
+      animation: bgGradient 15s ease infinite;
+      color: #ff4444;
+      padding: 80px 10px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      user-select: none;
+      position: relative;
+    }
+    @keyframes bgGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      width: 100%;
+      justify-content: center;
+      flex-grow: 1;
+    }
+    .column {
+      flex: 1;
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .container {
+      background: rgba(40,0,0,0.7);
+      border: 2px solid #ff2222;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 0 15px #ff2222aa;
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+      cursor: default;
+      position: relative;
+    }
+    .container.editable {
+      cursor: pointer;
+      border-color: #00ffaa;
+      box-shadow: 0 0 15px #00ffaaaa;
+    }
+    .container:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 0 30px #ff4444cc;
+    }
+    .file-name {
+      font-size: 18px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 8px #ff1111bb;
+    }
+    .file-size {
+      font-size: 14px;
+      color: #ff9999;
+      margin-bottom: 10px;
+    }
+    .counter {
+      font-size: 13px;
+      color: #ff6666;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .counter span {
+      color: #ff2222;
+      font-weight: 800;
+    }
+    .download-btn {
+      padding: 12px 28px;
+      border-radius: 30px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      box-shadow: 0 0 20px #ff4444;
+      display: inline-block;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+      background: linear-gradient(270deg, #ff2222, #aa0000, #ff5555, #aa0000);
+      background-size: 600% 600%;
+      animation: btnGradient 8s ease infinite;
+      border: none;
+      user-select: none;
+    }
+    .download-btn:hover {
+      box-shadow: 0 0 40px #ff5555, 0 0 60px #aa0000;
+      transform: scale(1.05);
+    }
+    @keyframes btnGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .telegram-btn {
+      margin-top: 30px;
+      padding: 14px 40px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      background: linear-gradient(270deg, #0088cc, #005577, #0099ff, #005577);
+      background-size: 800% 800%;
+      animation: telegramGradient 10s ease infinite;
+      box-shadow: 0 0 25px #0088cc;
+      text-decoration: none;
+      display: inline-block;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+      user-select: none;
+      border: none;
+    }
+    .telegram-btn:hover {
+      box-shadow: 0 0 50px #00aaff, 0 0 70px #0077aa;
+      transform: scale(1.1);
+    }
+    @keyframes telegramGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #btnLogin, #btnLogout, #btnAddBlock {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(270deg, #ff2222, #aa0000, #ff5555, #aa0000);
+      background-size: 600% 600%;
+      animation: btnGradient 8s ease infinite;
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #ff4444;
+      user-select: none;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+      z-index: 10000;
+    }
+    #btnLogout { right: 110px; display: none; }
+    #btnAddBlock { right: 200px; display: none; }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right:0; bottom:0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background: #220000;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #ff2222;
+      width: 320px;
+      color: #ff4444;
+      font-family: 'Metal Mania', cursive;
+    }
+    .modal-content label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 6px 8px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #330000;
+      color: #ff4444;
+    }
+    .modal-content button {
+      border: none;
+      padding: 10px 18px;
+      border-radius: 30px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      user-select: none;
+      background: linear-gradient(270deg, #ff2222, #aa0000, #ff5555);
+      background-size: 600% 600%;
+      animation: btnGradient 8s ease infinite;
+      transition: box-shadow 0.3s ease, transform 0.15s ease;
+    }
+    .modal-content button:hover {
+      box-shadow: 0 0 40px #ff5555, 0 0 60px #aa0000;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="column" id="col1"></div>
+    <div class="column" id="col2"></div>
+  </div>
+
+  <a href="https://t.me/chity_standoff_vip" target="_blank" class="telegram-btn">📱 Telegram: chity_standoff_vip</a>
+
+  <button id="btnLogin">Вход</button>
+  <button id="btnLogout">Выход</button>
+  <button id="btnAddBlock">Добавить блок</button>
+
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3>Редактировать блок</h3>
+      <label for="editName">Название файла</label>
+      <input type="text" id="editName" />
+      <label for="editSize">Размер файла</label>
+      <input type="text" id="editSize" />
+      <label for="editLink">Ссылка для скачивания</label>
+      <input type="url" id="editLink" />
+      <div style="display: flex; justify-content: space-between; gap: 10px;">
+        <button id="saveBtn">Сохранить</button>
+        <button id="deleteBtn" style="background: linear-gradient(270deg, #770000, #aa0000);">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для входа -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h3>Введите пароль</h3>
+      <input type="password" id="loginPassword" placeholder="Пароль" autocomplete="off" />
+      <button id="loginSubmitBtn">Войти</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAu4OpnvvfC0u3dVKwEDxiYLODzFh5yxLE",
+      authDomain: "chatcometnt.firebaseapp.com",
+      databaseURL: "https://chatcometnt-default-rtdb.firebaseio.com",
+      projectId: "chatcometnt",
+      storageBucket: "chatcometnt.appspot.com",
+      messagingSenderId: "799201141712",
+      appId: "1:799201141712:web:ded7582a71588328f44fd5"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const PASSWORD = 'Seitnebi2008';
+    const col1 = document.getElementById('col1');
+    const col2 = document.getElementById('col2');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+    const btnAddBlock = document.getElementById('btnAddBlock');
+    const editModal = document.getElementById('editModal');
+    const editName = document.getElementById('editName');
+    const editSize = document.getElementById('editSize');
+    const editLink = document.getElementById('editLink');
+    const saveBtn = document.getElementById('saveBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    // Новые элементы модального окна входа
+    const loginModal = document.getElementById('loginModal');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+
+    let blocksData = [];
+    let isEditMode = false;
+    let editingIndex = null;
+
+    function loadData() {
+      const saved = localStorage.getItem('skullBlocksData');
+      if (saved) {
+        blocksData = JSON.parse(saved);
+      } else {
+        for(let i=1; i<=20; i++) {
+          blocksData.push({
+            name: `💀 Skull Mod ${i}.apk`,
+            size: `${100 + Math.floor(Math.random() * 10)} МБ`,
+            link: 'https://go.linkify.ru/1yH8',
+            downloads: 10000
+          });
+        }
+      }
+    }
+    function saveData() {
+      localStorage.setItem('skullBlocksData', JSON.stringify(blocksData));
+    }
+
+    function renderBlocks() {
+      col1.innerHTML = '';
+      col2.innerHTML = '';
+      blocksData.forEach((data, i) => {
+        const container = document.createElement('div');
+        container.className = 'container' + (isEditMode ? ' editable' : '');
+        container.dataset.index = i;
+        container.innerHTML = `
+          <div class="file-name">${data.name}</div>
+          <div class="file-size">Размер: ${data.size}</div>
+          <div class="counter">Скачиваний: <span id="counter-skull-mod-${i+1}">${data.downloads.toLocaleString('ru-RU')}</span></div>
+          <a href="${data.link}" class="download-btn" target="_blank" onclick="incrementDownload('skull-mod-${i+1}')">⬇️ Скачать</a>
+        `;
+        (i < Math.ceil(blocksData.length / 2) ? col1 : col2).appendChild(container);
+      });
+      if(isEditMode) {
+        document.querySelectorAll('.container.editable').forEach(el => {
+          el.addEventListener('click', () => {
+            editingIndex = +el.dataset.index;
+            openEditModal(editingIndex);
+          });
+        });
+      }
+    }
+
+    function openEditModal(index) {
+      const data = blocksData[index];
+      editName.value = data.name;
+      editSize.value = data.size;
+      editLink.value = data.link;
+      editModal.classList.add('active');
+    }
+    function closeEditModal() {
+      editModal.classList.remove('active');
+      editingIndex = null;
+    }
+
+    saveBtn.addEventListener('click', () => {
+      if(editingIndex === null) return;
+      blocksData[editingIndex].name = editName.value.trim() || blocksData[editingIndex].name;
+      blocksData[editingIndex].size = editSize.value.trim() || blocksData[editingIndex].size;
+      blocksData[editingIndex].link = editLink.value.trim() || blocksData[editingIndex].link;
+      saveData();
+      renderBlocks();
+      closeEditModal();
+    });
+
+    deleteBtn.addEventListener('click', () => {
+      if(editingIndex === null) return;
+      if(confirm('Вы точно хотите удалить этот блок?')) {
+        blocksData.splice(editingIndex, 1);
+        saveData();
+        renderBlocks();
+        closeEditModal();
+      }
+    });
+
+    editModal.addEventListener('click', e => {
+      if(e.target === editModal) closeEditModal();
+    });
+
+    // Новая логика для входа через модальное окно, заменяет prompt()
+    btnLogin.addEventListener('click', () => {
+      loginModal.classList.add('active');
+      loginPassword.value = '';
+      loginPassword.focus();
+    });
+
+    loginSubmitBtn.addEventListener('click', () => {
+      const entered = loginPassword.value.trim();
+      if(entered === PASSWORD) {
+        isEditMode = true;
+        btnLogin.style.display = 'none';
+        btnLogout.style.display = 'inline-block';
+        btnAddBlock.style.display = 'inline-block';
+        renderBlocks();
+        loginModal.classList.remove('active');
+      } else {
+        alert('Неверный пароль. Попробуйте снова.');
+        loginPassword.value = '';
+        loginPassword.focus();
+      }
+    });
+
+    loginModal.addEventListener('click', e => {
+      if(e.target === loginModal) {
+        loginModal.classList.remove('active');
+      }
+    });
+
+    btnLogout.addEventListener('click', () => {
+      isEditMode = false;
+      btnLogin.style.display = 'inline-block';
+      btnLogout.style.display = 'none';
+      btnAddBlock.style.display = 'none';
+      renderBlocks();
+    });
+
+    btnAddBlock.addEventListener('click', () => {
+      blocksData.push({
+        name: `Новый блок ${blocksData.length + 1}.apk`,
+        size: '100 МБ',
+        link: 'https://go.linkify.ru/1yH8',
+        downloads: 0
+      });
+      saveData();
+      renderBlocks();
+    });
+
+    for(let i = 1; i <= 20; i++) {
+      const id = `skull-mod-${i}`;
+      const ref = db.ref(`downloads/${id}`);
+      ref.on('value', snap => {
+        const val = snap.val() || 10000;
+        if(blocksData[i-1]) {
+          blocksData[i-1].downloads = val;
+          const el = document.getElementById(`counter-skull-mod-${i}`);
+          if(el) el.textContent = val.toLocaleString('ru-RU');
+        }
+      });
+    }
+
+    function incrementDownload(id) {
+      const ref = db.ref(`downloads/${id}`);
+      ref.transaction(current => (current || 10000) + 1);
+    }
+    window.incrementDownload = incrementDownload;
+
+    loadData();
+    renderBlocks();
+  </script>
+</body>
+</html>
