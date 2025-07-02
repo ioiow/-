@@ -293,23 +293,31 @@
     let isEditMode = false;
     let editingIndex = null;
 
+    // Загрузка данных из Firebase (замена localStorage)
     function loadData() {
-      const saved = localStorage.getItem('skullBlocksData');
-      if (saved) {
-        blocksData = JSON.parse(saved);
-      } else {
-        for(let i=1; i<=20; i++) {
-          blocksData.push({
-            name: `💀 Skull Mod ${i}.apk`,
-            size: `${100 + Math.floor(Math.random() * 10)} МБ`,
-            link: 'https://go.linkify.ru/1yH8',
-            downloads: 10000
-          });
+      db.ref("skullBlocksData").once("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          blocksData = data;
+          renderBlocks();
+        } else {
+          // Если пусто — создаём дефолтные блоки и сохраняем их в Firebase
+          for(let i=1; i<=20; i++) {
+            blocksData.push({
+              name: `💀 Skull Mod ${i}.apk`,
+              size: `${100 + Math.floor(Math.random() * 10)} МБ`,
+              link: 'https://go.linkify.ru/1yH8',
+              downloads: 10000
+            });
+          }
+          saveData();
+          renderBlocks();
         }
-      }
+      });
     }
+    // Сохранение данных в Firebase (замена localStorage)
     function saveData() {
-      localStorage.setItem('skullBlocksData', JSON.stringify(blocksData));
+      db.ref("skullBlocksData").set(blocksData);
     }
 
     function renderBlocks() {
@@ -373,7 +381,6 @@
       if(e.target === editModal) closeEditModal();
     });
 
-    // Новая логика для входа через модальное окно, заменяет prompt()
     btnLogin.addEventListener('click', () => {
       loginModal.classList.add('active');
       loginPassword.value = '';
@@ -441,7 +448,6 @@
     window.incrementDownload = incrementDownload;
 
     loadData();
-    renderBlocks();
   </script>
 </body>
 </html>
